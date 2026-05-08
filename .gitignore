@@ -1,0 +1,6 @@
+# Skill-generated artifacts — these are outputs, not source data.
+inventory.csv
+REPORT.md
+text/
+analytics/
+.DS_Store
