@@ -17,6 +17,8 @@ This is a **mirror of public-domain US government documents**, hosted here as th
 
 **Of the 118 PDFs:** 54 have a text layer; 64 are scanned with no text layer. The 14 image files (PNG/JPG) are FBI sensor-frame photos and the 2024 composite sketch — they need vision analysis, not OCR.
 
+**Video is not mirrored here.** This release's PURSUE catalog is PDF + image only. If a future tranche includes video, it will be linked to <https://www.war.gov/UFO/> from this README rather than mirrored — videos are large enough that LFS economics push them toward the source-of-truth.
+
 ## How to use
 
 Clone with LFS:
