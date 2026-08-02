@@ -4,3 +4,14 @@ REPORT.md
 text/
 analytics/
 .DS_Store
+
+# toolchain scratch — partials must never be committed (see tools/README.md)
+tools/__pycache__/
+*.partial.mp4
+partials/
+uap-data.csv
+page.html
+diff.json
+media_*.json
+docs_result.json
+dvids_key.txt
