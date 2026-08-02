@@ -28,6 +28,23 @@ JS = '''async (u) => {
   } catch(e) { return {err:'EXC_'+e.message}; }
 }'''
 
+
+def _present(path):
+    """True if the file is already mirrored.
+
+    On a GIT_LFS_SKIP_SMUDGE clone the working tree holds ~130-byte LFS POINTERS,
+    not payload. A naive size threshold reads those as missing and re-downloads the
+    entire corpus. A pointer means the bytes exist on the LFS server — that counts
+    as present.
+    """
+    if not os.path.exists(path):
+        return False
+    with open(path, 'rb') as fh:
+        head = fh.read(64)
+    if head.startswith(b'version https://git-lfs'):
+        return True
+    return os.path.getsize(path) > 1000
+
 MAGIC = (b'%PDF-', b'\x89PNG', b'\xff\xd8\xff', b'II*\x00', b'MM\x00*')
 
 diff = json.load(open(os.path.join(WORK, 'diff.json')))
@@ -43,7 +60,7 @@ with sync_playwright() as p:
         link = d['link']
         base = urllib.parse.unquote(os.path.basename(link.split('?')[0]))
         dest = os.path.join(REPO, base)
-        if os.path.exists(dest) and os.path.getsize(dest) > 1000:
+        if _present(dest):
             res.append({'base': base, 'status': 'exists'}); print('exists', base, flush=True); continue
         done = False
         for _ in range(3):

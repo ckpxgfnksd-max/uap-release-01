@@ -40,6 +40,12 @@ glob and ignores size, so a partial inside the repo makes the record look mirror
 and it is skipped forever. Stage in the scratch dir; move in only after verifying
 byte size against the DVIDS API and an `ftyp` box at offset 4.
 
+**LFS pointers are not missing files.** On a `GIT_LFS_SKIP_SMUDGE` clone the working
+tree holds ~130-byte pointer files, not payload. Any "is it already mirrored?" check
+based on a size threshold reads the whole corpus as missing and re-downloads it.
+`reconcile.py` matches by filename so it is unaffected; `fetch_docs.py` treats a
+pointer as present.
+
 **Push before diff.** `reconcile.py` diffs against the working tree. If a run
 commits but fails to push, the files are already on disk, the next diff is empty,
 and the run exits "no changes" without pushing — healthy-looking output over a
