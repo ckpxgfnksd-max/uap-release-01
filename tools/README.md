@@ -58,6 +58,13 @@ zero and orphans the existing partial under the old name. It now refuses to star
 zero while a differently-named `*.partial.mp4` sits in the scratch dir (exit 3). Check the
 actual filename on disk before copying a resume command out of the log.
 
+**2 GiB is a hard ceiling.** GitHub LFS refuses any object over 2147483648 bytes
+(`Size must be less than or equal to 2147483648: [422]`). NASA-UAP-D024 (3.20 GB) is the
+first record to hit it and is stored as `*.mp4.part1` / `*.mp4.part2`, a raw byte split
+that `cat` reproduces exactly — see its `.REJOIN.txt`. Do not transcode to fit; that
+discards archival content. Check `size` in `media_resolved.json` against 2147483648
+before spending a multi-run download on an asset that cannot be stored whole.
+
 **Audio is video.** `Type=AUD` records resolve through the DVIDS API as
 `id=video:<id>`, exactly like `Type=VID`. There is no working `audio:` form.
 Forgetting this is the historical cause of missing audio records.
