@@ -1,0 +1,33 @@
+Bytes downloaded and verified, but too large for GitHub LFS; not stored here (2026-08-09)
+
+Record: NASA-UAP-D024
+Title: NASA-UAP-D024, "Apollo 16 Scientific Debriefing"
+Type: AUD (resolves through the DVIDS API as id=video:1010319, like every other asset)
+DVIDS Video ID: 1010319
+Source: https://d34w7g4gy10iej.cloudfront.net/video/2606/DOD_111764796/DOD_111764796.mp4
+Size: 3,203,453,083 bytes (DVIDS API) / 3,203,457,323 bytes as downloaded
+SHA-256: 6802ea0227e7be4f6ea844e58894075540dda14465735972f06f2bb0f963b7dc
+         (this is also the LFS OID in the rejection below — GitHub received the right
+         object and refused it on size alone, not on a corrupt or truncated transfer)
+
+Why no file: this is NOT a war.gov or DVIDS problem. The asset downloads fine and
+verifies (size matches the DVIDS API, ftyp box present at offset 4). GitHub's LFS API
+rejects it:
+
+  [6802ea02...] Size must be less than or equal to 2147483648: [422]
+
+2147483648 bytes is 2 GiB, a hard per-object ceiling on GitHub LFS. At 3.20 GB this
+record cannot be stored in this repository as a single object. Every other file in the
+corpus is under 1 GB, so this is the first record to hit the ceiling.
+
+Resolving it requires a human decision about corpus semantics, so the watcher will not
+pick one on its own. The options:
+  1. Split into <2 GiB parts (e.g. .part1/.part2 plus a rejoin note). Faithful bytes,
+     but the corpus would no longer be one-record-one-file.
+  2. Host the single file outside GitHub and reference it from here.
+  3. Store a transcoded copy under 2 GiB and keep this note pointing at the original.
+  4. Leave it as a pointer — the CloudFront URL above is public and stable.
+
+Tracked in the repo issues. The complete verified 3.20 GB file is preserved outside the
+clone at ~/.local/share/uap-watcher/nasa-uap-d24-apollo-16-scientific-debriefing.mp4 so
+whichever option is chosen does not require re-downloading it (it took five runs).
