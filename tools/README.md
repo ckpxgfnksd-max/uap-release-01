@@ -52,6 +52,12 @@ and the run exits "no changes" without pushing — healthy-looking output over a
 remote that is a commit behind. `run.sh` compares refs before the diff for this
 reason.
 
+**The resume name is the partial's name.** `resume_oversized.sh` derives the partial
+filename from its first argument, so a mistyped `<name>` starts a multi-GB download from
+zero and orphans the existing partial under the old name. It now refuses to start from
+zero while a differently-named `*.partial.mp4` sits in the scratch dir (exit 3). Check the
+actual filename on disk before copying a resume command out of the log.
+
 **Audio is video.** `Type=AUD` records resolve through the DVIDS API as
 `id=video:<id>`, exactly like `Type=VID`. There is no working `audio:` form.
 Forgetting this is the historical cause of missing audio records.
