@@ -1,0 +1,43 @@
+NASA-UAP-D024 is stored as two parts. Rejoin before playing.
+
+    cat nasa-uap-d24-apollo-16-scientific-debriefing.mp4.part1 \
+        nasa-uap-d24-apollo-16-scientific-debriefing.mp4.part2 \
+        > nasa-uap-d24-apollo-16-scientific-debriefing.mp4
+
+    shasum -a 256 nasa-uap-d24-apollo-16-scientific-debriefing.mp4
+    # expect 6802ea0227e7be4f6ea844e58894075540dda14465735972f06f2bb0f963b7dc
+
+This is a raw byte split, not a media-level segmentation. The concatenation is
+bit-identical to the file served by DVIDS — no container rewrap, no re-encode.
+The individual parts are deliberately NOT playable on their own; that is the cost
+of keeping the archived bytes exact.
+
+  part1  1,601,728,662 bytes  sha256 67fc8b6c9a3143dc5e798bc89c27bc306387d8c97b18eac52741a7db220edd6c
+  part2  1,601,728,661 bytes  sha256 295d2f05c4b24b91b338ea7867878bbfcf6d1dac25864c052e9f0d393f9b2e78
+  whole  3,203,457,323 bytes  sha256 6802ea0227e7be4f6ea844e58894075540dda14465735972f06f2bb0f963b7dc
+
+Record: NASA-UAP-D024, "Apollo 16 Scientific Debriefing"
+Type: AUD in war.gov's uap-data.csv, but the asset is a 96-minute 1920x1080 h264
+      video (4319 kb/s video + 96 kb/s AAC stereo). Like every DVIDS asset it
+      resolves as id=video:1010319.
+Source: https://d34w7g4gy10iej.cloudfront.net/video/2606/DOD_111764796/DOD_111764796.mp4
+DVIDS Video ID: 1010319
+
+Why split: GitHub LFS enforces a hard 2 GiB per-object ceiling. The whole file was
+downloaded and verified, then rejected on push:
+
+    [6802ea02...] Size must be less than or equal to 2147483648: [422]
+
+Splitting was chosen over the alternatives because it is the only one that keeps the
+government's exact bytes inside this repository:
+
+  - Transcoding under 2 GiB was rejected. The video track is genuine 1080p footage at
+    4319 kb/s, not a static slate over an audio record, so re-encoding would discard
+    real archival content.
+  - Time-based segmentation with `ffmpeg -c copy` would give two playable MP4s, but the
+    container rewrap means the pieces no longer concatenate to the original bytes.
+  - Hosting the single file off GitHub, or leaving a pointer to the CloudFront URL,
+    would defeat the point of the mirror for exactly the record most worth mirroring:
+    the corpus exists so the bytes survive independently of the government's host.
+
+See issue #4 for the full decision record.
