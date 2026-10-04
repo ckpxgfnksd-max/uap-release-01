@@ -1,10 +1,14 @@
 # uap-release-01
 
-A mirror of the war.gov UFO/UAP release — **338 content files, 15.1 GB** in Git LFS, pulled from <https://www.war.gov/UFO/> starting 2026-05-08 and kept in sync by a weekly watcher.
+A mirror of the war.gov UFO/UAP release — **382 content files, ~19 GB** in Git LFS, pulled from <https://www.war.gov/UFO/> starting 2026-05-08.
+
+> [!IMPORTANT]
+> **This repo is frozen at the 2026-08-07 tranche. New records continue in [uap-release-02](https://github.com/ckpxgfnksd-max/uap-release-02).**
+> This repository's Git LFS budget is exhausted (`This repository exceeded its LFS budget`), so the 2026-09-18 tranche (75 files, ~3.5 GB: 59 documents, 15 videos, 1 audio) was published there instead. The full corpus is **01 + 02**; no file is in both. Clone both as siblings to get everything, and run the watcher from `uap-release-02/tools/`.
 
 This is a **mirror of public-domain US government documents**, hosted as the canonical example dataset for the [`uap-release-analyzer`](https://github.com/ckpxgfnksd-max/uap-release-analyzer) skill. It lets anyone reproduce the eval scoreboard against the same input the skill was tuned on, without scraping war.gov themselves.
 
-> **Last sync:** 2026-08-02. war.gov currently lists **334 records** (189 PDF · 103 video · 27 image · 15 audio). 333 are mirrored; **NASA-UAP-D024** (Apollo 16 debriefing, 3.2 GB) is mid-transfer and lands next run. The 5 extra local files are documented under [Known gaps](#known-gaps).
+> **Status (2026-10-04):** war.gov lists **450 records**; all are mirrored across 01 + 02. This repo's last content commit is the 2026-08-09 sync (release_05, published 2026-08-07) plus NASA-UAP-D024 stored as two parts. The composition table below was computed on 2026-08-02 (338 files) and does not include the 2026-08-09 additions. The 5 extra local files are documented under [Known gaps](#known-gaps).
 
 ## Composition
 
@@ -85,7 +89,8 @@ tools/run.sh     # ref check, then: fetch record list -> diff -> fetch docs -> r
 
 ## Known gaps
 
-- **NASA-UAP-D024** (Apollo 16 Scientific Debriefing, 3.2 GB) is mid-transfer across runs and not yet mirrored.
+- **NASA-UAP-D024** (Apollo 16 Scientific Debriefing, 3.20 GB) exceeds GitHub's 2 GiB LFS object cap, so it is stored as `*.mp4.part1` + `*.mp4.part2`, a raw byte split; `cat` the parts to rejoin (see its `.REJOIN.txt`, issue #4).
+- **Records published after 2026-08-07** are in [uap-release-02](https://github.com/ckpxgfnksd-max/uap-release-02), not here.
 - **5 files present here with no matching current war.gov record.** These are renames, duplicates, or superseded entries retained deliberately — nothing is ever auto-deleted:
   `255_t_763_r1b_excerpt.mp4`, `59_214434_sp_16_7.18.1963.pdf`,
   `dow-uap-d20-mission-report-southern-united-states-2020.pdf` (see issue #3),
@@ -105,6 +110,6 @@ If you don't need the heaviest scanned NARA/FBI files (they have no text layer, 
 
 ## Sync to upstream
 
-Updates are picked up by the `war-gov-uap-watcher` scheduled task (weekly, Sunday 9 AM local). It fetches war.gov's `uap-data.csv` with a headless browser (Akamai 403s plain curl), diffs it against this mirror, resolves video and audio records through the DVIDS API, verifies each download, and commits via Git LFS. Files that vanish from war.gov are flagged in an issue for review, never auto-deleted.
+This repo no longer receives updates; the `war-gov-uap-watcher` scheduled task now writes to [uap-release-02](https://github.com/ckpxgfnksd-max/uap-release-02) and treats both repos as one mirror when deciding what is new. It fetches war.gov's `uap-data.csv` with a headless browser (Akamai 403s plain curl), diffs it against the mirror, resolves video and audio records through the DVIDS API, verifies each download, and commits via Git LFS. Files that vanish from war.gov are flagged in an issue for review, never auto-deleted.
 
 A record is only left as a `*.viewer-only.txt` placeholder when it genuinely cannot be resolved to bytes; that is the rare exception, not the default. If you spot a delta the watcher missed, open an issue.
